@@ -150,50 +150,99 @@ footer img{
     height: 35px;
     margin: 0.5em;
 }
-#cart{  
-    position: fixed;
-    bottom: 0%;
-    right: 0%;
-    height: 80%;
-    background-color: white;
-    border: 1px solid #f5010171;
-    width: 20em;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
+
+#cart {
+    margin: 0px;
     display: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: fixed;
+    top: 50px;
+    height: 95%;
+    right: 0;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(177, 103, 103);
+    min-height: 50vh;
+    width: 500px;
+    overflow: scroll;
 }
-.cart-close-button{
-    background-color: white;
-    color: #777;
-    border: 1px solid #777;
-    padding: 5px;
-    font-weight: bold;
-    font-size: 20px;
-    border-radius: 10px;
+.cancel{
     position: absolute;
+    top: 2%;
+    right: 2%;
+    padding: 5px;
+    border: 1px solid black;
+    border-radius: 5px;
     cursor: pointer;
-    top:5%;
-    right: 5%;
 }
-.cart-row.cart-header{
-    margin:10px auto;
+.cart-row{
+    font-size:18px;
+    display:flex;
+}
+.cart-header{
+    font-size:1.2rem;
     font-weight: bold;
-    font-size: 20px;
+    padding: 20px;
+    align-self: stretch;
 }
-.cart-row.cart-header span{
-   border-bottom: 1px solid black;
-   margin-right: 1em;
-   padding-bottom: 10px;
-   margin-top: 10px;
-   align-items: center;
+.cart-item{
+    width:50%;
+}
+.cart-img{
+    width:80px;
+    border-radius:8%;
+    margin-right:10px;
+}
+.cart-price{
+    width:20%;
+}
+.cart-quantity{
+    width:30%;
+}
+.cart-column{
+    display: flex;
+    border-bottom: 1px solid black;
+    margin-right: 2.8em;
+    padding-bottom: 10px;
+    margin-top: 10px;
 }
 
 .cart-total{
-    font-size: 20px;
-    margin-left: 200px;
-    margin-right: 20px;
+   display: flex;
+   align-self: flex-end;
+    font-size:1.2rem;
+    padding: 20px;
+    margin-right: 4em;
 }
+.cart-total .total-title{
+    margin-right:10px;
+    font-size:1.5rem;
+}
+.cart-quantity input{
+    width:40px;
+    height:30px;
+    border:1px solid rgb(0, 204, 255) ;
+    border-radius:8%;
+    outline:none;
+    text-align:center;
+    margin-right:20px;
+}
+.cart-quantity button{
+    color:white;
+    font-weight: bold;
+    background: rgb(231, 76, 76);
+    cursor: pointer;
+    border:none;
+    border-radius:8%;
+    height:30px;
+    outline:none;
+    padding: 0px 7px;
+}
+.cart-quantity button:hover{
+    background: rgb(218, 37, 37);;
+}
+
 .purchase{
     background-color: #56CCF2;
     color: white;
@@ -203,9 +252,89 @@ footer img{
     font-size:15px;
     font-weight: bold;
     border-radius: 4%;
-    margin: 5px auto;
 }
 .purchase:hover{
     background-color: #14bfe1;
 }
+#aboutus-container{
+    width: 900px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto;
+}
+#aboutus-container p{
+    margin-left: 2em;
+    text-align: justify;
+}
+#aboutus-img{
+    width: 200px;
+    height: 200px;
+    border-radius: 8em;
+    float: left;
+    margin: 10px;
+    object-fit: cover;
+}
+#latest-album-btn,#play-btn{
+    background-color: #777;
+    color: white;
+    border: 1px solid aqua;
+    margin: 10px;
+    padding: 10px;
+    align-self: center;
+    border-radius: 5px;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+#play-btn{
+    border-radius: 3em;
+    color: aqua;
+    padding: 20px;
+}
+#tour-list{
+    margin: 10px auto;
+    width: 900px;
+}
+.tour-item {
+    padding: 1em;
+    border-bottom: 1px solid black;
+    display: flex;
+}
+.buy-btn{
+    background-color: #56CCF2;
+    color: white;
+    padding: 8px;
+    cursor: pointer;
+    border: none;
+    font-weight: bold;
+    border-radius: 4%;
+    width:20%;
+}
+.tour-item .tour-date{
+    font-weight:bold;
+    width:12%;
+}
+.tour-item .tour-place{
+    width:25%;
+}
+.tour-item .tour-spec-place{
+    width:45%;
+}
+#item-added{
+    position: fixed;
+    right:2%;
+    bottom: 2%;
+
+}
+#notification{
+    background-color: #56CCF2;
+    color: white;
+    padding: 10px;
+    border: none;
+    font-size:20px;
+    font-weight: bold;
+    border-radius: 4%;
+}
+
 
