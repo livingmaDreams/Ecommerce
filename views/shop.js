@@ -17,6 +17,10 @@ function showCart(){
  }
 
  function addCartDetail(id,name,img,price,totalprice){
+   const cartList = document.getElementById(`in-cart-${id}`);
+   if(cartList)
+   alert('This Item is already added to Cart');
+   else{
    const cartItem = document.getElementById('cart-items');
 
    const div = document.createElement('div');
@@ -50,6 +54,7 @@ function showCart(){
    quanSpan.appendChild(input);
    const button = document.createElement('button');
    button.textContent='REMOVE';
+   button.setAttribute('onclick','removeItem(event)');
    quanSpan.appendChild(button);
    div.appendChild(quanSpan);
 
@@ -57,14 +62,17 @@ function showCart(){
 
   const totalVal = document.getElementById('total-value');
   totalVal.textContent = +totalVal.textContent + +price;
-
-  const totalNo = document.getElementsByClassName('item-count');
+  showNotification(name);
+  cartUpdate();
+   }
+ }
+ function cartUpdate(){
+ const totalNo = document.getElementsByClassName('item-count');
   let count=0;
   for(let i of totalNo)
    count += +i.value;
   const cartVal = document.getElementById('cart-number');
   cartVal.textContent = count;
-  showNotification(name);
  }
 
  function showNotification(name){
@@ -76,4 +84,12 @@ function showCart(){
  setTimeout(()=>{
   notif.remove();
  },2000);
+ }
+ function removeItem(event){
+  const parEle = event.target.parentNode.parentNode;
+  parEle.remove();
+  const totalVal = document.getElementById('total-value');
+  const price = event.target.parentNode.previousElementSibling.textContent;
+  totalVal.textContent = +totalVal.textContent - +price;
+  cartUpdate();
  }
