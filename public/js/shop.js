@@ -1,40 +1,4 @@
-
- 
-
- function cartUpdate(){
- const totalNo = document.getElementsByClassName('item-count');
-  let count=0;
-  let totalVal = 0;
-  for(let i of totalNo){
-    count += +i.value;
-    price = +i.parentElement.previousElementSibling.textContent * i.value;
-    i.parentElement.previousElementSibling.previousElementSibling.textContent = price;
-    totalVal += price;
-  }
-  const cartVal = document.getElementById('cart-number');
-  cartVal.textContent = count;
-  
-  document.getElementById('total-value').textContent = totalVal.toFixed(2);
-
- }
- function removeItem(event){
-  const parEle = event.target.parentNode.parentNode;
-  parEle.remove();
-  const totalVal = document.getElementById('total-value');
-  const price = event.target.parentNode.previousElementSibling.textContent;
-  totalVal.textContent = +totalVal.textContent - +price;
-  cartUpdate();
- }
-
-
-function closeCart(){
-  const sect = document.getElementById('cart');
-  sect.style.display='none';
-}
-function showCart(){
-   const sect = document.getElementById('cart');
-   sect.style.display='flex';
-}
+let cartCount = 0;
 
 //SHOW PRODUCT
 function getDetails(){
@@ -82,31 +46,61 @@ function getCart(){
       const name = prod.name;
       const img = prod.img;
       const price = prod.price;
+      cartCount += quantity;
       addCartDetail(id,quantity,name,img,price);
     }
+    cartUpdate(cartCount);
   })
   .catch(err => console.log(err));
 }
 function addToCart(event){
+  let obj={};
+  let id;
+  let nameProd;
+  let img;
+  let price;
+  let sign = 1;
   if(event.target.className == "add-to-cart"){
-   const id = event.target.parentNode.parentNode.id;
-   const name = event.target.parentNode.parentNode.className;
-   const img = event.target.parentNode.previousElementSibling.firstChild.src;
-   const price = event.target.previousElementSibling.lastChild.textContent;
-   const obj={id};
+    id = event.target.parentNode.parentNode.id;
+    nameProd = event.target.parentNode.parentNode.className;
+   img = event.target.parentNode.previousElementSibling.firstChild.src;
+   price = event.target.previousElementSibling.lastChild.textContent;
+   obj={id,sign};
+   showNotification(nameProd);
+  }
+  else{
+    id = event.target.dataset.prodid;
+    const prevVal = event.target.dataset.prevval;
+    val = event.target.value;
+    img = event.target.parentNode.parentNode.firstChild.firstElementChild.src;
+    nameProd = event.target.parentNode.parentNode.firstChild.lastElementChild.textContent;
+    price = event.target.parentNode.previousElementSibling.previousElementSibling.textContent;
+    if(prevVal > val)
+    sign = 0;
+     console.log(prevVal,val)
+    obj={id,sign};
+  }
    axios.post('http://localhost:3000/cart',obj)
    .then(res => {
-   const quantity = res.data.newCartProduct;
-   if(quantity>1){
-     document.getElementById(`item-${name}-count`).value = quantity;
+   const newquantity = res.data.newquantity;
+   let oldquantity = (res.data.oldquantity)?res.data.oldquantity:0;
+   if(!oldquantity)
+   {
+    addCartDetail(id,newquantity,nameProd,img,price);
+    const diff = newquantity - oldquantity;
+    cartCount += diff;
+   cartUpdate(cartCount);
    }else{
-    showNotification(name);
-    addCartDetail(id,quantity,name,img,price)
-   .catch(err=> console.log(err));
-  }
-  } )
+    const diff = newquantity - oldquantity;
+    cartCount += diff;
+   document.getElementById(`item-${nameProd}-count`).value = newquantity;
+   document.getElementById(`item-${nameProd}-count`).dataset.prevval = newquantity;
+   cartUpdate(cartCount);
+   }
+  })
+  .catch(err=> console.log(err));
  }
-}
+ 
 function addCartDetail(id,quantity,name,img,price){
   const cartItem = document.getElementById('cart-items');
 
@@ -118,17 +112,16 @@ function addCartDetail(id,quantity,name,img,price){
     <img class="cart-img" src='${img}'>
     <span>${name}</span>
     </span>
-    <span class="cart-price cart-column-hidden" hidden>
-    ${price}</span>
+    <span class="cart-price cart-column-hidden" hidden>${price}</span>
     <span class="cart-price cart-column">${price}</span>
     <span class="cart-quantity cart-column">
-    <button onclick="removeItem(event)">REMOVE</button>
-    <input id="item-${name}-count" onchange="cartUpdate()" type="number" value='${quantity}'>
+    <input id="item-${name}-count" onchange="addToCart(event)" type="number"  step='1' min='1' data-prevval=${quantity} data-prodid='${id}' value='${quantity}'>
+    <button  onclick="removeItem(event)">REMOVE</button>
     </span>
     </div>`;
   cartItem.appendChild(div);
-  cartUpdate();
-  }
+  
+}
 function showNotification(name){
     const notif = document.createElement('div');
     notif.innerHTML=`<h4>${name} is added to Cart</h4>`;
@@ -138,7 +131,20 @@ function showNotification(name){
     setTimeout(()=>{
      notif.remove();
     },2000);
-    }
+}
+function cartUpdate(cartCount){
+  const cartVal = document.getElementById('cart-number');
+  cartVal.textContent = cartCount;
+ }
+
+ function removeItem(event){
+  const parEle = event.target.parentNode.parentNode;
+  parEle.remove();
+  const totalVal = document.getElementById('total-value');
+  const price = event.target.parentNode.previousElementSibling.textContent;
+  totalVal.textContent = +totalVal.textContent - +price;
+  cartUpdate();
+ }
 
 //ADD PRODUCT
 function prodDetail(event){

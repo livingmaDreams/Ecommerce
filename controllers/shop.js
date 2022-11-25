@@ -24,8 +24,11 @@ module.exports.addProducts = (req,res,next) =>{
 
 exports.addCart = (req,res,next) =>{
     const id = req.body.id;
+    const sign = req.body.sign;
+
     let fetchedCart;
   let newQuantity = 1;
+  let oldQuantity ;
   req.user
     .getCart()
     .then(cart => {
@@ -38,8 +41,12 @@ exports.addCart = (req,res,next) =>{
         product = products[0];
       }
       if (product) {    
-        const oldQuantity = product.cartitem.quantity;
+        oldQuantity = product.cartitem.quantity;
+        if(sign == 1)
         newQuantity = oldQuantity + 1;
+        else
+        newQuantity = oldQuantity - 1;
+        
         return product;
       }
       return Products.findByPk(id);
@@ -50,7 +57,7 @@ exports.addCart = (req,res,next) =>{
       });
     })
     .then((data) => {
-      res.json({newCartProduct : newQuantity})
+      res.json({newquantity: newQuantity,oldquantity : oldQuantity})
     })
     .catch(err => console.log(err));
 }
