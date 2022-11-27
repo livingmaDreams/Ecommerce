@@ -1,9 +1,33 @@
 const Products = require('../models/products');
 const Cart = require('../models/cart');
+const sequelize = require('../util/database');
 
+
+exports.getDetails = (req,res,next) =>{
+  let musiccount,merchcount;
+Products.count({where:{category:'music'}})
+  .then(musiccount =>{
+    musiccount = musiccount;
+    return Products.count({where:{category:'merch'}})
+  .then(merchcount => res.json({musiccount:musiccount,merchcount:merchcount}))
+  .catch(err => console.log(err));
+  })
+
+ 
+
+}
 module.exports.getProducts = (req,res,next) => {
- Products.findAll()
- .then(data => res.json({product: data}))
+  let category = req.params.category;
+  const page = req.query.page;
+  let limit = 2;
+  Products.findAll({
+    where:{
+      category: category
+    },
+  offset:((page-1)*limit),
+  limit : limit,
+ })
+ .then(data => res.json({product: data,category:category}))
  .catch(err => console.log(err));
 }
 
@@ -24,7 +48,7 @@ module.exports.addProducts = (req,res,next) =>{
 
 exports.addCart = (req,res,next) =>{
     const id = req.body.id;
-    const sign = req.body.sign;
+    const count = req.body.count;
 
     let fetchedCart;
   let newQuantity = 1;
@@ -42,11 +66,7 @@ exports.addCart = (req,res,next) =>{
       }
       if (product) {    
         oldQuantity = product.cartitem.quantity;
-        if(sign == 1)
-        newQuantity = oldQuantity + 1;
-        else
-        newQuantity = oldQuantity - 1;
-        
+        newQuantity = oldQuantity + count;
         return product;
       }
       return Products.findByPk(id);
@@ -66,7 +86,6 @@ exports.getCart = (req,res,next) =>{
 req.user
  .getCart()
  .then(cart =>{
-    console.log(cart);
     return cart.getProducts();
  })
  .then(data => res.json({cartproducts : data}))
@@ -75,5 +94,20 @@ req.user
 
 
 exports.deleteCart = (req,res,next) =>{
+   const id = req.params.id;
+   req.user
+   .getCart()
+   .then(cart => {
+    return cart.getProducts({where:{id:id}})
+   })
+   .then(products =>{
+    let product = products[0];
+    return product.cartitem.destroy();
+   })
+   .then(()=>{
+    res.json({deletedproduct: id});
+   })
+   .catch(err => console.log(err));
+   
 
 }

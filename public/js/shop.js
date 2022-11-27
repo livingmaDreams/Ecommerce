@@ -1,19 +1,56 @@
 let cartCount = 0;
 
-//SHOW PRODUCT
+
 function getDetails(){
   axios.get('http://localhost:3000/shop')
+  .then((res)=>{
+    let musiccount = res.data.musiccount;
+    let merchcount = res.data.merchcount;
+    let limit = 2;
+    let musictotalpages = Math.ceil(musiccount/limit);
+    let merchtotalpages = Math.ceil(merchcount/limit);
+    const pageMusic = document.getElementById('pagination-music')
+    for(let i=1;i<=musictotalpages;i++)
+    {
+      const button = document.createElement('button');
+      button.className = 'music-pages';
+      button.textContent= i;
+      button.setAttribute('onclick',"getProducts('music',event.target.textContent)")
+      pageMusic.appendChild(button);
+    }
+    getProducts('music',1);
+    const pageMerch = document.getElementById('pagination-merch')
+    for(let i=1;i<=merchtotalpages;i++)
+    {
+      const button = document.createElement('button');
+      button.className = 'merch-pages';
+      button.textContent = i;
+      button.setAttribute('onclick',"getProducts('merch',event.target.textContent)")
+      pageMerch.appendChild(button);
+    }
+    getProducts('merch',1);
+   
+  })
+}
+//SHOW PRODUCT
+function getProducts(category,page){
+  let parEle='';
+  const list = document.getElementById(`${category}-content`).childNodes ;
+  for(let i = list.length -1;i>=0;i--){
+    list[i].remove();
+  }
+ 
+  axios.get(`http://localhost:3000/shop/${category}?page=${page}`)
   .then((res) => {
     let data = res.data.product;
-    for(let i of data){
-      if(i.category == 'music'){
-        const parEle = document.getElementById(`${i.category}-content`);
-        showProduct(i,parEle);
-      }else if(i.category == 'merch'){
-        const parEle = document.getElementById(`${i.category}-content`);
-        showProduct(i,parEle);
-    }
-  }
+    let category = res.data.category;
+    if(category == 'music')
+     parEle = document.getElementById(`${category}-content`); 
+  else
+     parEle = document.getElementById(`${category}-content`);
+
+    for(let i of data)
+      showProduct(i,parEle);
   })
   .catch(err => console.log(err));
 }
@@ -59,13 +96,13 @@ function addToCart(event){
   let nameProd;
   let img;
   let price;
-  let sign = 1;
+  let count =1;
   if(event.target.className == "add-to-cart"){
     id = event.target.parentNode.parentNode.id;
     nameProd = event.target.parentNode.parentNode.className;
    img = event.target.parentNode.previousElementSibling.firstChild.src;
    price = event.target.previousElementSibling.lastChild.textContent;
-   obj={id,sign};
+   obj={id,count};
    showNotification(nameProd);
   }
   else{
@@ -74,36 +111,29 @@ function addToCart(event){
     val = event.target.value;
     img = event.target.parentNode.parentNode.firstChild.firstElementChild.src;
     nameProd = event.target.parentNode.parentNode.firstChild.lastElementChild.textContent;
-    price = event.target.parentNode.previousElementSibling.previousElementSibling.textContent;
-    if(prevVal > val)
-    sign = 0;
-     console.log(prevVal,val)
-    obj={id,sign};
+    count = val - prevVal;
+    obj={id,count};
   }
    axios.post('http://localhost:3000/cart',obj)
    .then(res => {
    const newquantity = res.data.newquantity;
    let oldquantity = (res.data.oldquantity)?res.data.oldquantity:0;
    if(!oldquantity)
-   {
     addCartDetail(id,newquantity,nameProd,img,price);
+    
     const diff = newquantity - oldquantity;
-    cartCount += diff;
-   cartUpdate(cartCount);
-   }else{
-    const diff = newquantity - oldquantity;
-    cartCount += diff;
+   cartCount += diff;
    document.getElementById(`item-${nameProd}-count`).value = newquantity;
    document.getElementById(`item-${nameProd}-count`).dataset.prevval = newquantity;
+   price = document.getElementById(`in-cart-${id}`).childNodes[2].dataset.price;
+   document.getElementById(`in-cart-${id}`).childNodes[2].textContent = (price*newquantity).toFixed(2);
    cartUpdate(cartCount);
-   }
   })
   .catch(err=> console.log(err));
  }
  
 function addCartDetail(id,quantity,name,img,price){
   const cartItem = document.getElementById('cart-items');
-
   const div = document.createElement('div');
   div.className = 'cart-row';
   div.id = `in-cart-${id}`;
@@ -112,8 +142,7 @@ function addCartDetail(id,quantity,name,img,price){
     <img class="cart-img" src='${img}'>
     <span>${name}</span>
     </span>
-    <span class="cart-price cart-column-hidden" hidden>${price}</span>
-    <span class="cart-price cart-column">${price}</span>
+    <span class="cart-price cart-column" data-price=${price}>${price}</span>
     <span class="cart-quantity cart-column">
     <input id="item-${name}-count" onchange="addToCart(event)" type="number"  step='1' min='1' data-prevval=${quantity} data-prodid='${id}' value='${quantity}'>
     <button  onclick="removeItem(event)">REMOVE</button>
@@ -133,17 +162,28 @@ function showNotification(name){
     },2000);
 }
 function cartUpdate(cartCount){
+  let totalprice = 0;
   const cartVal = document.getElementById('cart-number');
   cartVal.textContent = cartCount;
+  const priceList = document.getElementsByClassName('cart-price cart-column');
+  for(let i=1;i<priceList.length;i++){
+    let itemprice = priceList[i].textContent;
+    totalprice += +itemprice;
+  }
+   document.getElementById('total-value').textContent = totalprice;
  }
 
  function removeItem(event){
   const parEle = event.target.parentNode.parentNode;
-  parEle.remove();
-  const totalVal = document.getElementById('total-value');
-  const price = event.target.parentNode.previousElementSibling.textContent;
-  totalVal.textContent = +totalVal.textContent - +price;
-  cartUpdate();
+  const id = event.target.previousElementSibling.dataset.prodid;
+  const itemCount = event.target.previousElementSibling.value;
+   axios.delete(`http://localhost:3000/cart/delete/${id}`)
+   .then(()=>{
+    parEle.remove();
+    cartCount = cartCount - itemCount;
+    cartUpdate(cartCount);
+   })
+   .catch(err => console.log(err));
  }
 
 //ADD PRODUCT

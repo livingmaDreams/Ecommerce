@@ -121,7 +121,7 @@
         border: none;
         border-radius: 7px;
         padding: 10px;
-        margin: auto;
+        margin: 10px auto;
         font-size: 15px;
         font-weight: bold;
         cursor: pointer;
@@ -387,6 +387,19 @@
     #form #submit:hover{
         background-color: #80a1bfbd;
         color: white;
+    }
+    #pagination-music,#pagination-merch{
+        text-align: center;
+    }
+    #pagination-music button,#pagination-merch button{
+        width: 20px;
+        height: 20px;
+        margin: 5px;
+        background-color: #777;
+        color: #14bfe1;
+        border: none;
+        border-radius: 7px;
+
     }
 
 
