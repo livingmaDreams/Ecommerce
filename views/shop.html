@@ -13,7 +13,7 @@
                 <li><a href="home.html">HOME</a></li>
                 <li><a href="shop.html">STORE</a></li>
                 <li><a href="aboutus.html">ABOUT</a></li>
-                <li ><a class='cart' onclick="showCart()">CART</a><span class="cart-number" id="cart-number">0</span></li>
+                <li ><a class='cart'  onclick="document.getElementById('cart').style.display='block'">CART</a><span class="cart-number" id="cart-number">0</span></li>
             </ul>
         <h1>The Generics</h1>
     </header>
@@ -44,8 +44,14 @@
                 $<span id="total-value">0</span>
             </span>
         </div>  
-            <button class="purchase">Purchase</button>
+            <button class="purchase" onclick="purchase(event)">Purchase</button>
         
+    </section>
+    <section id="purchase" class="çontainer">
+        <h3>ORDER DETAILS</h3>
+        <div id="purchase-content">
+          
+        </div> 
     </section>
     <button class="cart-button" onclick="document.getElementById('cart').style.display='block'">See the Cart</button>  
     

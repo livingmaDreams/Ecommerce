@@ -27,16 +27,26 @@ app.use('/shop',shopRouter);
 const cartRouter = require('./routes/cart');
 app.use('/cart',cartRouter);
 
+const purchaseRouter = require('./routes/purchase')
+app.use('/purchase',purchaseRouter);
+
+
 const Product = require('./models/products');
 const User = require('./models/users');
 const Cart = require('./models/cart');
-const CartItem = require('./models/cartitem')
+const CartItem = require('./models/cartitem');
+const Order = require('./models/order');
+const OrderItem = require('./models/orderitem')
 
 User.hasOne(Cart);
 Cart.belongsTo(User);
 Product.belongsToMany(Cart ,{through: CartItem});
 Cart.belongsToMany(Product,{through:CartItem});
 
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(Product,{through: OrderItem});
+Product.belongsToMany(Order,{through: OrderItem});
 
 const sequelize = require('./util/database')
 sequelize

@@ -1,6 +1,7 @@
 const Products = require('../models/products');
 const Cart = require('../models/cart');
 const sequelize = require('../util/database');
+const { or } = require('sequelize');
 
 
 exports.getDetails = (req,res,next) =>{
@@ -110,4 +111,27 @@ exports.deleteCart = (req,res,next) =>{
    .catch(err => console.log(err));
    
 
+}
+
+exports.addOrder = (req,res,next) =>{
+ let orderId;
+  req.user
+  .getCart()
+   .then(cart => {
+    return cart.getProducts();
+   })
+   .then(products =>{
+    return req.user.createOrder()
+    .then(order =>{
+        orderId = order.id;
+      order.addProducts(
+        products.map(product =>{
+        product.orderitem = {quantity: product.cartitem.quantity};
+        return product;
+      })
+      )
+    })
+   })
+  .then(data => res.json({orderid: orderId ,status: 'success'}))
+  .catch(err => console.log(err));
 }

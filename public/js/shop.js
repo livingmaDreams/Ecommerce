@@ -136,6 +136,7 @@ function addCartDetail(id,quantity,name,img,price){
   const cartItem = document.getElementById('cart-items');
   const div = document.createElement('div');
   div.className = 'cart-row';
+  div.setAttribute('data-prodid',id);
   div.id = `in-cart-${id}`;
   div.innerHTML =
     `<span class="cart-item cart-column">
@@ -196,4 +197,20 @@ function prodDetail(event){
   axios.post('http://localhost:3000/add-product',obj)
   .then(res => console.log(res))
   .catch(err => console.log(err));
+}
+
+function purchase(event){
+
+    axios.post('http://localhost:3000/purchase')
+    .then(res => {
+      const orderid = res.data.orderid;
+      console.log(orderid)
+      const div = document.getElementById('purchase-content');
+      div.innerHTML=`<h6>Order has been successfully placed.</h6>
+      <h6>Your order id is ${orderid}</h6>
+      <button id="purchase-button" onclick="document.getElementById('purchase').style.display='none'">OK</button>`;
+      document.getElementById('purchase').style.display='block';
+    })
+      .catch(err => console.log(err));
+  
 }
