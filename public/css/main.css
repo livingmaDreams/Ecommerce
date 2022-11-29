@@ -134,6 +134,9 @@
         color: white;
         font-size: 25px;
         justify-content: space-around;
+        position: relative;
+        bottom:0%;
+        width:100vw;
     }
     footer ul{
         list-style-type: none;
@@ -431,5 +434,51 @@
         border-radius: 7px;
 
     }
+    .order-list{
+        display: block;
+        width: 600px;
+        position: relative;
+        left: 30%;
+    }
+    .order-list li{
+        list-style-type: none;
+    }
+    .order-prod-detail-header{
+        font-weight: bold;
+        font-size: 20px;
+    }
+    .order-prod-detail-header{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        right:5%;
+    }
+    
+
+    .order-prod-detail {
+        width: 30vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        margin: 5px ;
+    }
+    .order-img{
+        width:100px;
+        height:100px;
+        margin-right: 10px; 
+        border-radius: 5px;
+    }
+    .order-name{
+        margin-right: 20px;
+    }
+    .order-quantity{
+        margin-left: 60px;
+    }
+    .order-price{
+        margin-left: 50px;
+    }
+
 
 

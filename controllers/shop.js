@@ -135,3 +135,22 @@ exports.addOrder = (req,res,next) =>{
   .then(data => res.json({orderid: orderId ,status: 'success'}))
   .catch(err => console.log(err));
 }
+
+exports.getOrder = (req,res,next) =>{
+  let orders = {};
+  req.user
+  .getOrders()
+  .then(order =>{
+      for(let i=0;i<order.length;i++)
+       { 
+        let orderid = order[i].id;
+        order[i].getProducts()
+        .then(prod => {
+           orders[orderid] = prod;
+          if(i == order.length-1)
+           return res.json({orderdetails: orders})
+        })
+      }
+  })
+  .catch(err => console.log(err));
+}

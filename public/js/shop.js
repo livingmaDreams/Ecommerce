@@ -214,3 +214,44 @@ function purchase(event){
       .catch(err => console.log(err));
   
 }
+
+function getOrderDetails(){
+
+  axios.get('http://localhost:3000/purchase/order-details')
+  .then(res => {
+    console.log(res)
+    const data = res.data.orderdetails;
+    for(let order in data){
+      const id = order;
+      const child = document.createElement('ul');
+      child.id = id;
+      child.innerHTML = `<span class="order-prod-detail-header">
+      <span class="order-price">Product</span>
+      <span class="order-quantity">Quantity</span>
+      <span class="order-price">Price</span>
+      </span>`;
+      for(let prod of data[order]){
+        const img = prod.img;
+        const price = prod.price;
+        const quantity = prod.orderitem.quantity;
+        const name = prod.name;
+        const div = document.createElement('li');
+          div.innerHTML=`<span class="order-prod-detail">
+                        <img class="order-img" src=${img}>
+                        <span class='order-name'>${name}</span>
+                        <span class="order-quantity">${quantity}</span>
+                        <span class="order-price">${price}</span>
+                        </span>`;
+          child.appendChild(div);
+      }
+      const parDiv = document.createElement('div');
+      parDiv.innerHTML = `<h3>order No. - ${id}</h3>
+      <button class='order-button'>View Details</button>`;
+      parDiv.className = 'order-list';
+      parDiv.appendChild(child);
+      const parEle = document.getElementById('order-content');
+      parEle.appendChild(parDiv);
+    }
+  })
+  .catch(err => console.log(err));
+}
