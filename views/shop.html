@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Project</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <header>
+            <ul class="header">
+                <li><a href="/shop">STORE</a></li>
+                <li><a href="/aboutus">ABOUT</a></li>
+                <li><a href="/order">ORDER</a></li>
+                <li><a class="logout" onclick="logOut(event)">LOGOUT</a></li>  
+                <li ><a class='cart'  onclick="document.getElementById('cart').style.display='block'">CART</a><span class="cart-number" id="cart-number">0</span></li>   
+            </ul>
+        <h1>The Book Store</h1>
+    </header>
+    <section id="store" class="çontainer">
+        <h2>STORE</h2>
+        <div  id="store-content" onclick="addToCart(event)"></div>
+        <section id="pagination-store"></section>
+    </section>
+    
+    <section id="cart" class="çontainer">
+        <h2>CART</h2>
+        <button class="cancel" onclick="document.getElementById('cart').style.display='none'">X</button>
+        <div class="cart-header">
+            <span class="cart-item cart-column">ITEM</span>
+            <span class="cart-price cart-column">PRICE</span>
+            <span class="cart-quantity cart-column">QUANTITY</span>
+        </div>
+        <div id="cart-items">
+        </div>
+        <div class="cart-total">
+            <span>
+                <span class="total-title"> <strong>Total</strong>
+                    </span>
+                    ₹<span id="total-value">0</span>
+            </span>
+        </div>  
+            <button class="purchase" onclick="purchase(event)">Purchase</button>
+        
+    </section>
+    <section id="purchase" class="çontainer">
+        <h3>ORDER DETAILS</h3>
+        <div id="purchase-content">
+          
+        </div> 
+    </section>
+    <button class="cart-button" onclick="document.getElementById('cart').style.display='block'">See the Cart</button>  
+    
+    <div id="item-added"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="/js/shop.js"></script>
+    <script>
+       // window.addEventListener('DOMContentLoaded',getDetails);
+        window.addEventListener('DOMContentLoaded',getProducts)
+        window.addEventListener('DOMContentLoaded',getCart);
+    </script>
+    <footer>
+        <h2>The Book Store</h2> 
+        <ul class="footer">
+            <li><a href="http://youtube.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt=""></a></li>
+            <li><a href="http://spotify.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/174/174872.png" alt=""></a></li>
+            <li><a href="http://facebook.com" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" alt=""></a></li>
+        </ul>
+    </footer>
+</body>
+</html>
